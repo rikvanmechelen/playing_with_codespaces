@@ -1,16 +1,19 @@
 class ConwaysGameOfLife {
   constructor() {
     this.liveCells = {}
-    this.addCell(this.liveCells, new Cell(2,1))
-    this.addCell(this.liveCells, new Cell(2,2))
-    this.addCell(this.liveCells, new Cell(3,1))
-    this.addCell(this.liveCells, new Cell(3,2))
-    this.addCell(this.liveCells, new Cell(4,1))
-    this.addCell(this.liveCells, new Cell(4,2))
   }
 
   next() {
     this.liveCells = this.getNextState();
+  }
+
+  markCell(x,y) {
+    const cell = new Cell(x,y)
+    if (this.isAlive(cell)) {
+      delete this.liveCells[cell.toKey()];
+    } else {
+      this.addCell(this.liveCells, cell);
+    }
   }
 
   addCell(lst, cell) {
@@ -45,7 +48,7 @@ class ConwaysGameOfLife {
   }
 
   willBeAlive(cell) {
-    const liveCount = this.getLiveCount(cell)
+    const liveCount = this.livingNeighborsCount(cell)
     const forLiving = this.isAlive(cell) && liveCount > 1 && liveCount < 4;
     const forDead = !this.isAlive(cell) && liveCount === 3;
     return forLiving || forDead;
@@ -66,7 +69,7 @@ class ConwaysGameOfLife {
       ]
   }
 
-  getLiveCount(cell) {
+  livingNeighborsCount(cell) {
     const neighbors = this.getNeighbors(cell);
     var liveCount = 0;
     for (const neigbor of neighbors) {
@@ -91,6 +94,14 @@ class Cell {
 
 function main() {
   const game = new ConwaysGameOfLife();
+
+  game.markCell(2,1);
+  game.markCell(2,2);
+  game.markCell(3,1);
+  game.markCell(3,2);
+  game.markCell(4,1);
+  game.markCell(4,2);
+
   console.log(game);
   game.next();
   console.log(game);
